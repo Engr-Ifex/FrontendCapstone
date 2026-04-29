@@ -1,27 +1,39 @@
 import { useState } from "react";
+import TaskInput from "../components/TaskInput";
+import TaskList from "../components/TaskList";
 
-const TaskInput = ({ addTask }) => {
-  const [input, setInput] = useState("");
+const Dashboard = () => {
+  // STATE (LIFTED HERE)
+  const [tasks, setTasks] = useState([]);
 
-  const handleAdd = () => {
-    addTask(input);
-    setInput(""); // clear input
+  // ADD TASK
+  const addTask = (text) => {
+    if (text.trim() === "") return;
+
+    const newTask = {
+      id: Date.now(),
+      text,
+    };
+
+    setTasks((prev) => [...prev, newTask]);
+  };
+
+  // DELETE TASK
+  const deleteTask = (id) => {
+    setTasks((prev) => prev.filter((task) => task.id !== id));
   };
 
   return (
     <div>
-      <input
-        type="text"
-        placeholder="Enter task..."
-        value={input}
-        onChange={(e) => setInput(e.target.value)}
-      />
+      <h1>Dashboard</h1>
 
-      <button onClick={handleAdd}>
-        Add
-      </button>
+      {/* Add Task */}
+      <TaskInput addTask={addTask} />
+
+      {/* Show Tasks */}
+      <TaskList tasks={tasks} deleteTask={deleteTask} />
     </div>
   );
 };
 
-export default TaskInput;
+export default Dashboard;
