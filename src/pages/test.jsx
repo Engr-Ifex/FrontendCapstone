@@ -1,16 +1,31 @@
-import { Navigate } from "react-router-dom";
+import { signOut } from "firebase/auth";
+import { auth } from "../firebase";
+import { useNavigate } from "react-router-dom";
 import { useAuth } from "../context/AuthContext";
 
-const ProtectedRoute = ({ children }) => {
+const Profile = () => {
+  const navigate = useNavigate();
   const { user } = useAuth();
 
-  // If user is not logged in → redirect to login
-  if (!user) {
-    return <Navigate to="/" replace />;
-  }
+  const handleLogout = async () => {
+    try {
+      await signOut(auth);
+      navigate("/"); // go back to login
+    } catch (error) {
+      console.log(error.message);
+    }
+  };
 
-  // If logged in → allow access
-  return children;
+  return (
+    <div>
+      <h1>Profile</h1>
+      <p>Email: {user?.email}</p>
+
+      <button onClick={handleLogout}>
+        Logout
+      </button>
+    </div>
+  );
 };
 
-export default ProtectedRoute;
+export default Profile;
