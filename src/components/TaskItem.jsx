@@ -1,17 +1,20 @@
-import React from 'react'
-
-const TaskItem = ({ task, deleteTask}) => {
+const TaskItem = ({ task, deleteTask }) => {
   return (
-    <div>
-        <li>
-            {task.text}
+    <li className="flex justify-between items-center bg-gray-50 p-4 rounded-lg shadow-sm hover:shadow-md transition">
 
-            <button onClick={() => deleteTask(task.id)}>
-                Delete
-            </button>
-        </li>
-    </div>
-  )
-}
+      <span className="text-gray-700">
+        {task.text}
+      </span>
 
-export default TaskItem
+      <button
+        onClick={() => deleteTask(task.id)}
+        className="text-red-500 hover:text-red-700 font-medium"
+      >
+        Delete
+      </button>
+
+    </li>
+  );
+};
+
+export default TaskItem;
