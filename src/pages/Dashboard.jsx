@@ -1,4 +1,4 @@
-import { useState } from "react";
+import { useEffect, useState } from "react";
 import TaskInput from "../components/TaskInput";
 import TaskList from "../components/TaskList";
 import { ToastContainer, toast } from "react-toastify";
@@ -6,6 +6,32 @@ import 'react-toastify/dist/ReactToastify.css';
 
 const Dashboard = () => {
   const [tasks, setTasks] = useState([]);
+
+  useEffect(() => {
+    const savedItems = localStorage.getItem("tasks")
+
+    if(savedItems && JSON.parse(savedItems).length > 0) {
+      setTasks(JSON.parse(savedItems))
+    }else{
+      fetch("https://jsonplaceholder.typicode.com/todos?_limit=5")
+      .then((res) => res.json())
+      .then((data) => {
+        const formatted = data.map((item) => ({
+          id: item.id,
+          text: item.title
+        }));
+
+        setTasks(formatted)
+      })
+      .catch((error) => {
+        console.log(error)
+      });
+    }
+  }, [])
+
+  useEffect(() => {
+    localStorage.setItem("tasks", JSON.stringify(tasks))
+  },[tasks]);
 
   // ✅ ADD TASK
   const addTask = (text) => {
