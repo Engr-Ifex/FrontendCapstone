@@ -5,29 +5,29 @@ import { ToastContainer, toast } from "react-toastify";
 import 'react-toastify/dist/ReactToastify.css';
 
 const Dashboard = () => {
-  const [tasks, setTasks] = useState([]);
+  const [tasks, setTasks] = useState(() => {
+  const saved = localStorage.getItem("tasks");
+  return saved ? JSON.parse(saved) : [];
+});
 
-  useEffect(() => {
-    const savedItems = localStorage.getItem("tasks")
-
-    if(savedItems && JSON.parse(savedItems).length > 0) {
-      setTasks(JSON.parse(savedItems))
-    }else{
-      fetch("https://jsonplaceholder.typicode.com/todos?_limit=5")
+ useEffect(() => {
+  // Only fetch if NO tasks exist
+  if (tasks.length === 0) {
+    fetch("https://jsonplaceholder.typicode.com/todos?_limit=5")
       .then((res) => res.json())
       .then((data) => {
         const formatted = data.map((item) => ({
           id: item.id,
-          text: item.title
+          text: item.title,
         }));
 
-        setTasks(formatted)
+        setTasks(formatted);
       })
       .catch((error) => {
-        console.log(error)
+        console.log(error);
       });
-    }
-  }, [])
+  }
+}, []);
 
   useEffect(() => {
     localStorage.setItem("tasks", JSON.stringify(tasks))
